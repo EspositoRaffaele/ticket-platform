@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creazione Nota</title>
+
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+</head>
+
+<body>
+    <header>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    </header>
+
+    <main class="container">
+        <section class="upper row">
+            <div class="div col-12 text-center mb-3">
+                <h1>Creazione Nota per il ticket <span class="fw-bold">"[[${ticket.titolo}]]"</span></h1>
+            </div>
+        </section>
+
+        <section class="note">
+            <div class="col-12">
+                <h3>Ciao [[${utenteCorrente.username}]], scrivi la tua nota da assegnare al Ticket #[[${id}]]</h3>
+                <form th:action="@{/note}" method="POST" th:object="${nota}">
+
+                    <input type="hidden" th:field="*{ticket}" id="ticket-id">
+                    <input type="hidden" th:field="*{utente}" id="id-utente">
+
+                    <div class="mb-3">
+                        <label for="data-creazione" class="form-label">Data Creazione:</label>
+                        <input type="date" class="form-control mb-3" id="data-creazione" th:field="*{dataCreazione}"
+                            th:errorClass="is-invalid" required>
+
+                        <div th:if="${#fields.hasErrors('dataCreazione')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('dataCreazione')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="testo" class="form-label">Nota:</label>
+                        <textarea type="text" class="form-control mb-3" id="testo" th:field="*{testo}"
+                            th:errorClass="is-invalid" required> </textarea>
+
+                        <div th:if="${#fields.hasErrors('testo')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('testo')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between">
+                        <button class="btn btn-primary">Crea</button>
+                        <button class="btn btn-warning" type="reset">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        <th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+    </footer>
+
+</body>
+
+</html>

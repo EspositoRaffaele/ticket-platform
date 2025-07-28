@@ -1,0 +1,111 @@
+<!-- <div>
+                        <label for="categoria">Seleziona Categoria:</label>
+                        <select id="categoria" name="categoria" th:field="*{categoria}">
+                            <option value="" disabled selected>Seleziona una categoria</option>
+                            <th:block th:each="categoria : ${categorie}">
+                                <option th:value="${categoria.id}" th:text="${categoria.nome}">Categoria</option>
+                            </th:block>
+                        </select>
+                    </div> -->
+
+<!-- <div>
+                        <label for="stato">Seleziona Stato:</label>
+                        <select id="stato" name="stato" th:field="*{stato}">
+                            <option value="" disabled selected>Seleziona uno stato</option>
+                            <th:block th:each="stato : ${stati}">
+                                <option th:value="${stato.id}" th:text="${stato.nomeStato}"></option>
+                            </th:block>
+                        </select>
+                    </div> -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Ticket</title>
+
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+</head>
+
+<body>
+    <header>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    </header>
+
+    <main class="container">
+        <section class="upper row">
+            <div class="div col-12 text-center mb-3">
+                <h1 class="text-light">Modifica del Ticket [[${titolo}]]</h1>
+            </div>
+        </section>
+
+        <section class="ticket row">
+            <div class="col-12">
+                <form th:action="@{|/tickets/edit/*{id}|}" method="post" th:object="${ticket}">
+                    
+                    <!-- Solo in fase di creazione come ADMIN viene passato il valore nel campo -->
+                    <input sec:authorize="hasAuthority('ADMIN')" type="hidden" th:field="*{stato}" id="stato-id">
+
+                    <div class="mb-3">
+                        <label for="titolo" class="form-label">Titolo:</label>
+                        <input type="text" class="form-control mb-3" id="titolo" th:field="*{titolo}"
+                            th:errorClass="is-invalid" required>
+
+                        <div th:if="${#fields.hasErrors('titolo')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('titolo')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="utente">Assegna Operatore:</label>
+                        <select class="form-select form-select-sm mb-3" id="utente" name="utente" th:field="*{utente}">
+                            <option value="" disabled selected>Seleziona un operatore</option>
+                            <div th:each="utente : ${operatoriDisponibili}">
+                                <option th:value="${utente.id}" th:text="${utente.username}">Operatore</option>
+                            </div>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="categoria">Seleziona Categoria:</label>
+                        <select class="form-select form-select-sm mb-3" id="categoria" name="categoria"
+                            th:field="*{categoria}">
+                            <option value="" disabled selected>Seleziona una categoria</option>
+                            <th:block th:each="categoria : ${categorie}">
+                                <option th:value="${categoria.id}" th:text="${categoria.nome}">Categoria</option>
+                            </th:block>
+                        </select>
+                    </div>
+
+                    <div sec:authorize="hasAuthority('OPERATORE')">
+                        <label for="stato">Seleziona Stato:</label>
+                        <select class="form-select form-select-sm mb-5" id="stato" name="stato" th:field="*{stato}">
+                            <option value="" disabled selected>Aggiorna Stato:</option>
+                            <th:block th:each="stato : ${stati}">
+                                <option th:value="${stato.id}" th:text="${stato.nomeStato}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between">
+                        <button class="btn btn-primary">Modifica ticket</button>
+                        <button class="btn btn-warning" type="reset">Azzera campi</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        <th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+    </footer>
+
+</body>
+
+</html>

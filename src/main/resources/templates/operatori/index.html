@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestore Ticket</title>
+
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+</head>
+
+<body>
+    <header>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    </header>
+
+    <main class="container">
+        <section class="upper row">
+            <div class="div col-12 text-center mb-3">
+                <h1 class="text-light">Lista Ticket</h1>
+            </div>
+        </section>
+
+        <!-- sezione dedicata alle info dell'operatore 
+        CONTENUTO QUI
+        -->
+
+        <section class="Tickets row">
+            <div class="col-12">
+                <div class="buttons mb-4 px5 d-flex justify-content-between">
+                    <div class="input-group w-25">
+                        <form th:action="@{/operatori/index}" class="d-inline-block d-flex" method="GET">
+                            <input type="text" class="form-control" placeholder="Cerca Ticket" aria-label="Cerca Ticket"
+                                aria-describedby="button-addon2" name="keyword">
+                            <button class="btn btn-outline-primary" type="submit" id="button-addon2">Cerca</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <table class="table table-dark table-striped table-hover" th:if="${ticketAssegnati.size() > 0}">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Titolo Ticket</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="ticket : ${ticketAssegnati}" th:object="${ticket}">
+                            <td th:text="*{id}"></td>
+                            <td th:text="*{titolo}"></td>
+                            <td class="text-end">
+                                <a th:href="@{/tickets/nota/{id}(id=*{id})}"
+                                    class="btn btn-outline-primary btn-sm">Scrivi Note</a>
+                                <a th:href="@{/operatori/{id}(id=*{id})}" class="btn btn-primary btn-sm">Info</a>
+                                <a th:href="@{/tickets/edit/{id}(id=*{id})}" sec:authorize="hasAuthority('OPERATORE')"
+                                    class="btn btn-success btn-sm">Modifica</a>
+
+                                <!-- Tasto che triggera la modale -->
+                                <button type="button" sec:authorize="hasAuthority('OPERATORE')"
+                                    class="btn btn-warning btn-sm d-inline" data-bs-toggle="modal"
+                                    th:data-bs-target="'#delete-modal-' + *{id}">
+                                    Cancella
+                                </button>
+
+                                <!-- Modale -->
+                                <div class="modal fade" th:id="'delete-modal-' + *{id}" data-bs-backdrop="static"
+                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Cancellazione del
+                                                    Ticket: <strong>[[*{titolo}]]</strong>
+                                                </h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close">asd</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="text-start">Stai per cancellare in modo permanente il Ticket. Sei sicuro?
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Chiudi</button>
+                                                <form th:action="@{|tickets/delete/*{id}|}" method="POST"
+                                                    class="d-inline">
+                                                    <button type="submit" class="btn btn-danger">Cancella</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="text-center" th:unless="${ticketAssegnati.size() > 0}">Nessun ticket trovato</h2>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        <th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+    </footer>
+
+</body>
+
+</html>

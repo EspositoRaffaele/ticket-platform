@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+</head>
+
+<body>
+    <header>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    </header>
+
+    <main class="container" th:object="${ticket}">
+        <section class="upper row">
+            <div class="div col-12 text-center mb-3 mt-3">
+                <h1 class="fw-bold">Ticket info</h1>
+            </div>
+        </section>
+
+        <section class="ticket row justify-content-center">
+            <div class="card border-info" style="width: 40rem;">
+                <div class="card-header">
+                    <h5 class="card-title">[[${ticket.titolo}]]</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Gestito dall'operatore: [[*{utente.username}]]</h6>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Categoria: [[${ticket.categoria.nome}]]</h6>
+                </div>
+                <div class="card-body">
+                    <h6>Note:</h6>
+                    <ul th:each="nota : ${ticket.note}" th:object="${nota}">
+                        <li class="card-text">[[*{testo}]]</li>
+                    </ul>
+                    <p class="card-text" ></p>
+                    <div class="card-footer"><strong>Stato:</strong> [[${ticket.stato.nomeStato}]]</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        <th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+    </footer>
+
+</body>
+
+</html>
