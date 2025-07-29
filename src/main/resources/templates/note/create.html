@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <header>
+    <header class="mb-3">
         <nav th:replace="~{fragments/navbar :: navbar}"></nav>
     </header>
 
@@ -24,15 +24,15 @@
 
         <section class="note">
             <div class="col-12">
-                <h3>Ciao [[${utenteCorrente.username}]], scrivi la tua nota da assegnare al Ticket #[[${id}]]</h3>
+                <h3 class="mb-5">Ciao [[${utenteCorrente.username}]], scrivi la tua nota da assegnare al Ticket #[[${id}]]</h3>
                 <form th:action="@{/note}" method="POST" th:object="${nota}">
 
                     <input type="hidden" th:field="*{ticket}" id="ticket-id">
                     <input type="hidden" th:field="*{utente}" id="id-utente">
 
-                    <div class="mb-3">
-                        <label for="data-creazione" class="form-label">Data Creazione:</label>
-                        <input type="date" class="form-control mb-3" id="data-creazione" th:field="*{dataCreazione}"
+                    <div class="mb-1">
+                        <label for="data-creazione" class="form-label"><strong>Data creazione:</strong> [[*{dataCreazione}]]</label>
+                        <input type="hidden" class="form-control mb-3" id="data-creazione" th:field="*{dataCreazione}"
                             th:errorClass="is-invalid" required>
 
                         <div th:if="${#fields.hasErrors('dataCreazione')}" class="invalid-feedback">
@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="testo" class="form-label">Nota:</label>
+                        <label for="testo" class="form-label"><strong>Nota:</strong></label>
                         <textarea type="text" class="form-control mb-3" id="testo" th:field="*{testo}"
                             th:errorClass="is-invalid" required> </textarea>
 
@@ -56,7 +56,7 @@
 
                     <div class="mb-3 d-flex justify-content-between">
                         <button class="btn btn-primary">Crea</button>
-                        <button class="btn btn-warning" type="reset">Reset</button>
+                        <button class="btn btn-warning" type="reset">Azzera campi</button>
                     </div>
                 </form>
             </div>

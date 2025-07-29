@@ -28,13 +28,17 @@
                     <h5 class="card-title" th:text="*{username}"></h5>
                     <h6 class="card-subtitle mb-2 text-body-secondary" th:each="ruolo : ${operatore.ruoli}">
                         [[${ruolo.nomeRuolo}]]</h6>
+                    <h6 class="card-subtitle mb-2 text-body-secondary" th:if="${operatore.stato} == true">
+                        Stato: ATTIVO</h6>
+                    <h6 class="card-subtitle mb-2 text-body-secondary" th:unless="${operatore.stato} == true">
+                        Stato: NON ATTIVO</h6>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/operatori/update-stato}" th:object="${operatore}" method="post">
                         <input type="hidden" th:field="*{id}" />
 
                         <div class="form-group">
-                            <label for="stato"><strong>Stato Attuale:</strong></label>
+                            <label for="stato"><strong>Modifica stato:</strong></label>
                             <select class="form-control border-info" id="stato" th:field="*{stato}">
                                 <option th:value="true">Attivo</option>
                                 <option th:value="false">Non attivo</option>
@@ -48,11 +52,11 @@
         </section>
 
 
-        <section class="Tickets row">
+        <section class="tickets row">
             <div class="col-12">
                 <div class="buttons mb-4 px5 d-flex justify-content-between">
                     <div class="input-group w-25">
-                        <form th:action="@{/operatori/index}" class="d-inline-block d-flex" method="GET">
+                        <form th:action="@{/operatori}" class="d-inline-block d-flex" method="GET">
                             <input type="text" class="form-control" placeholder="Cerca Ticket" aria-label="Cerca Ticket"
                                 aria-describedby="button-addon2" name="keyword">
                             <button class="btn btn-outline-primary" type="submit" id="button-addon2">Cerca</button>
@@ -66,8 +70,9 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Titolo Ticket</th>
+                            <th scope="col">Gestito Da</th>
                             <th scope="col">Stato</th>
-                            <th scope="col">Note</th>
+                            <!-- <th scope="col">Note</th> -->
                             <th scope="col">Numero Note</th>
                             <th scope="col"></th>
                         </tr>
@@ -76,19 +81,20 @@
                         <tr th:each="ticket : ${ticketAssegnati}" th:object="${ticket}">
                             <td th:text="*{id}"></td>
                             <td th:text="*{titolo}"></td>
+                            <td th:text="*{utente.username}"></td>
                             <td th:text="*{stato.nomeStato}"></td>
-                            <td> 
+                            <!-- <td> 
                                 <ul>
                                     <li th:each="nota : *{note}" th:text="${nota.testo}"></li>
                                 </ul>
-                            </td>
-                            <td class="text-center" th:text="*{note.size()}"></td>
+                            </td> -->
+                            <td th:text="*{note.size()}"></td>
                             <td class="text-end">
                                 <a th:href="@{/tickets/nota/{id}(id=*{id})}"
-                                    class="btn btn-outline-primary btn-sm">Scrivi Note</a>
+                                    class="btn btn-outline-primary btn-sm">Nota</a>
                                 <a th:href="@{/operatori/{id}(id=*{id})}" class="btn btn-primary btn-sm">Info</a>
                                 <a th:href="@{/tickets/edit/{id}(id=*{id})}" sec:authorize="hasAuthority('OPERATORE')"
-                                    class="btn btn-success btn-sm">Modifica</a>
+                                    class="btn btn-success btn-sm" th:if="${operatore.stato == true}">Modifica</a>
 
                                 <!-- Tasto che triggera la modale -->
                                 <button type="button" sec:authorize="hasAuthority('OPERATORE')"
@@ -118,7 +124,7 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Chiudi</button>
-                                                <form th:action="@{|tickets/delete/*{id}|}" method="POST"
+                                                <form th:action="@{|operatori/delete/*{id}|}" method="POST"
                                                     class="d-inline">
                                                     <button type="submit" class="btn btn-danger">Cancella</button>
                                                 </form>

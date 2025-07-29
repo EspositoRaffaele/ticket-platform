@@ -22,20 +22,35 @@
             </div>
         </section>
 
-        <section class="ticket row justify-content-center">
+        <section class="ticket row justify-content-center mb-5">
             <div class="card border-info" style="width: 40rem;">
-                <div class="card-header">
-                    <h5 class="card-title">[[*{titolo}]]</h5>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">Gestito dall'operatore: [[*{utente.username}]]</h6>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">Categoria: [[*{categoria.nome}]]</h6>
+                <div class="card-header border-info">
+                    <h4 class="card-title">[[*{titolo}]]</h4>
                 </div>
                 <div class="card-body">
-                    <h6>Note:</h6>
-                    <ul th:each="nota : ${ticket.note}" th:object="${nota}">
-                        <li class="card-text">[[*{testo}]]</li>
-                    </ul>
-                    <p class="card-text"></p>
-                    <div class="card-footer"><strong>Stato:</strong> [[*{stato.nomeStato}]]</div>
+                    <h6 class="card-text fs-6"><strong>Gestito dall'operatore:</strong> [[*{utente.username}]]</h6>
+                    <h6 class="card-text fs-6"><strong>Categoria:</strong> [[${ticket.categoria.nome}]]</h6>
+                </div>
+                <div class="card-footer border-info"><strong>Stato:</strong> [[*{stato.nomeStato}]]</div>
+            </div>
+        </section>
+
+        <section class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <div>
+                    <a th:href="@{/tickets/nota/{id}(id=*{id})}" class="btn btn-md btn-success w-100">Crea nuova
+                        Nota</a>
+                    <div class="card border-success" style="width: 40rem">
+                        <div class="card-header border-success border-3 text-center fs-5 fw-semibold">
+                            Elenco Note
+                        </div>
+                        <ul class="list-group list-group-flush" th:each="nota : ${ticket.note}" th:object="${nota}">
+                            <li class="list-group-item" th:each="ruolo : ${nota.utente.ruoli}"><strong>Autore:</strong>
+                                [[${ruolo.nomeRuolo}]] - [[*{utente.username}]]</li>
+                            <li class="list-group-item"><strong>Data Creazione:</strong> [[*{dataCreazione}]]</li>
+                            <li class="list-group-item"><strong>Nota:</strong> [[*{testo}]]</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>

@@ -44,10 +44,7 @@
 
         <section class="ticket row">
             <div class="col-12">
-                <form th:action="@{|/tickets/edit/*{id}|}" method="post" th:object="${ticket}">
-
-                    <!-- Solo in fase di creazione come ADMIN viene passato il valore nel campo -->
-                    <input sec:authorize="hasAuthority('ADMIN')" type="hidden" th:field="*{stato}" id="stato-id">
+                <form th:action="@{|/operatori/edit/*{id}|}" method="post" th:object="${ticket}">
 
                     <div class="mb-3">
                         <label for="titolo" class="form-label">Titolo:</label>
@@ -82,7 +79,7 @@
                         </select>
                     </div>
 
-                    <div sec:authorize="hasAuthority('OPERATORE')">
+                    <div class="mb-3">
                         <label for="stato">Seleziona Stato:</label>
                         <select class="form-select form-select-sm mb-5" id="stato" name="stato" th:field="*{stato}">
                             <option value="" disabled selected>Aggiorna Stato:</option>

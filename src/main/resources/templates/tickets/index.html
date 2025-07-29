@@ -18,11 +18,11 @@
     <main class="container">
         <section class="upper row">
             <div class="div col-12 text-center mb-3">
-                <h1 class="text-light">Lista Ticket</h1>
+                <h1 class="fw-bold">Lista Ticket</h1>
             </div>
         </section>
 
-        <section class="Tickets row">
+        <section class="tickets row">
             <div class="col-12">
                 <div class="buttons mb-4 px5 d-flex justify-content-between">
                     <a th:href="@{/tickets/create}" sec:authorize="hasAuthority('ADMIN')"
@@ -52,7 +52,7 @@
                             <td th:text="*{titolo}"></td>
                             <td class="text-end">
                                 <a th:href="@{/tickets/nota/{id}(id=*{id})}"
-                                    class="btn btn-outline-primary btn-sm">Scrivi Note</a>
+                                    class="btn btn-outline-primary btn-sm">Nota</a>
                                 <a th:href="@{/tickets/{id}(id=*{id})}" class="btn btn-primary btn-sm">Info</a>
                                 <a th:href="@{/tickets/edit/{id}(id=*{id})}" sec:authorize="hasAuthority('ADMIN')"
                                     class="btn btn-success btn-sm">Modifica</a>

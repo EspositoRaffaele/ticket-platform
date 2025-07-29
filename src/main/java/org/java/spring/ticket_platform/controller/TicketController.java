@@ -79,13 +79,13 @@ public class TicketController {
         // disponibile trovato");
         // }
         
-        //Query su utenti - ricerca per nome_ruolo e stato
-        List<Utente> utente = utenteRepository.findByRuoliNomeRuoloAndStatoTrue("OPERATORE");
+        //Query su utenti - ricerca per nome_ruolo e stato - Ritorna una lista con operatori in stato attivo
+        List<Utente> operatori = utenteRepository.findByRuoliNomeRuoloAndStatoTrue("OPERATORE");
         // Recupero lo stato del ticket di tipo 1 (Da Fare) e lo imposto come default alla creazione
         Optional<Stato> stato = statoRepository.findById(1);
         Ticket ticket = new Ticket();
         ticket.setStato(stato.get());
-        model.addAttribute("operatoriDisponibili", utente);
+        model.addAttribute("operatoriDisponibili", operatori);
         model.addAttribute("categorie", categoriaRepository.findAll());
         model.addAttribute("stato", stato.get());
         model.addAttribute("ticket", ticket);
@@ -127,7 +127,7 @@ public class TicketController {
         if (authentication.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("OPERATORE"))) {
             // Se è un Operatore, reindirizza a /operatori/index
-            return "redirect:/operatori/index";
+            return "redirect:/operatori";
         } else
 
         return "redirect:/tickets";

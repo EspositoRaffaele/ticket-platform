@@ -3,8 +3,12 @@ package org.java.spring.ticket_platform.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.java.spring.ticket_platform.Repository.CategoriaRepository;
+import org.java.spring.ticket_platform.Repository.NotaRepository;
+import org.java.spring.ticket_platform.Repository.StatoRepository;
 import org.java.spring.ticket_platform.Repository.TicketRepository;
 import org.java.spring.ticket_platform.Repository.UtenteRepository;
+import org.java.spring.ticket_platform.model.Nota;
 import org.java.spring.ticket_platform.model.Ticket;
 import org.java.spring.ticket_platform.model.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,23 +33,32 @@ import jakarta.validation.Valid;
 public class UtenteController {
     @Autowired
     private TicketRepository ticketRepository;
-
     @Autowired
     private UtenteRepository utenteRepository;
+    @Autowired
+    private NotaRepository notaRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+    @Autowired
+    private StatoRepository statoRepository;
 
-    @GetMapping("/index")
+    @GetMapping
     public String index(Authentication authentication, @RequestParam(name = "keyword", required = false) String keyword,
             Model model) {
+        // Recupero nome dell'utente autenticato
         String operatore = authentication.getName();
+        // Recupero utente da db con query find by username
         Optional<Utente> utenteCorrente = utenteRepository.findByUsername(operatore);
         if (utenteCorrente.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Impossibile trovare l'utente");
         }
+        // Recupero della lista dei ticket con operatore(attualmente loggato) assegnato grazie alla query find by utente
         List<Ticket> ticketAssegnati = ticketRepository.findByUtente(utenteCorrente);
         model.addAttribute("operatore", utenteCorrente.get());
 
+        // Ricerca del ticket grazie alla query find by titolo e id utente
         if (keyword != null && !keyword.isEmpty() && !keyword.isBlank()) {
-            ticketAssegnati = ticketRepository.findByTitoloContainingIgnoreCase(keyword);
+            ticketAssegnati = ticketRepository.findByTitoloContainingIgnoreCaseAndUtenteId(keyword, utenteCorrente.get().getId());
             model.addAttribute("ticketAssegnati", ticketAssegnati);
         } else {
             model.addAttribute("ticketAssegnati", ticketAssegnati);
@@ -53,28 +66,62 @@ public class UtenteController {
         return "operatori/index";
     }
 
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable("id") Integer id, Model model) {
+        List<Utente> utente;
+        utente = utenteRepository.findByRuoliNomeRuoloAndStatoTrue("OPERATORE");
+        model.addAttribute("operatoriDisponibili", utente);
+        model.addAttribute("ticket", ticketRepository.findById(id).get());
+        model.addAttribute("categorie", categoriaRepository.findAll());
+        model.addAttribute("stati", statoRepository.findAll());
+        return "operatori/edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(Authentication authentication, @PathVariable Integer id, @Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "operatori/edit";
+        }
+
+        ticketRepository.save(formTicket);
+
+        // if (authentication.getAuthorities().stream()
+        //         .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("OPERATORE"))) {
+        //     // Se è un Operatore, reindirizza a /operatori/index
+        //     return "redirect:/operatori";
+        // } else
+
+        return "redirect:/operatori";
+    }
+
     @PostMapping("/update-stato")
-    public String updateStato(@Valid @ModelAttribute("operatore") Utente operatoreForm, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+    public String updateStato(Authentication authentication, @Valid @ModelAttribute("operatore") Utente operatoreForm, BindingResult bindingResult,
+            Model model, RedirectAttributes redirectAttributes) {
         // if (bindingResult.hasErrors()) {
         // model.addAttribute("operatore", operatoreForm);
         // return "operatori/index";
         // }
 
-        Optional<Utente> utenteOptional = utenteRepository.findById(operatoreForm.getId());
+        // Recupero l'utente dal form tramite Id
+        Optional<Utente> utenteOptional = utenteRepository.findByUsername(authentication.getName());
         if (utenteOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nessun utente trovato");
         }
-        Integer numeroTicket = ticketRepository.countByUtenteId(operatoreForm.getId());
-        if (numeroTicket > 0) {
-            model.addAttribute("operatore", operatoreForm);
-            redirectAttributes.addFlashAttribute("errore", "Non puoi disattivarti se hai ticket aperti.");
-            return "redirect:/operatori/index";
+        // Ricerca con query su ticket in DB -> find by not id stato(Cerco ticket che non abbiano id=3 ovvero stato=completato) e id utente
+        List<Ticket> ticketIncompleti = ticketRepository.findByUtenteIdAndStatoIdNot(utenteOptional.get().getId(), 3);
+        // L'utente non può disattivarsi se la lista dei ticket non completati non è vuota, ovvero sono presenti ticket DA_FARE e IN_CORSO 
+        // a quel punto reindirizza ad /operatori e invia un messaggio di errore in pagina
+        if (!ticketIncompleti.isEmpty()) {
+        model.addAttribute("operatore", operatoreForm);
+        redirectAttributes.addFlashAttribute("errore", "Non puoi disattivarti se hai ticket aperti.");
+            return "redirect:/operatori";
         }
 
         Utente utente = utenteOptional.get();
         utente.setStato(operatoreForm.getStato());
         utenteRepository.save(utente);
-        return "redirect:/operatori/index";
+        return "redirect:/operatori";
 
     }
 
@@ -89,10 +136,24 @@ public class UtenteController {
         // Se l'id dell'operatore associato al ticket non corrisponde alla rotta, torna
         // alla index
         if (ticket.isEmpty()) {
-            return "redirect:/operatori/index";
+            return "redirect:/operatori";
         } else
             // altrimenti mostrami il ticket
             model.addAttribute("ticket", ticket.get());
         return "operatori/show";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, Model model) {
+        Ticket ticketDaCancellare = ticketRepository.findById(id).get();
+
+        // Per ogni nota presente nel ticket da cancellare, cancella la nota
+        for (Nota nota : ticketDaCancellare.getNote()) {
+            notaRepository.delete(nota);
+        }
+
+        ticketRepository.delete(ticketDaCancellare);
+
+        return "redirect:/operatori";
     }
 }

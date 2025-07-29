@@ -40,23 +40,24 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="utente">Assegna Operatore:</label>
-                        <select class="form-select form-select-sm mb-3" id="utente" name="utente" th:field="*{utente}">
+                    <div class="mb-3">
+                        <label for="utente">Assegna Operatore Disponibile:</label>
+                        <select class="form-select form-select mb-3" id="utente" name="utente" th:field="*{utente}">
                             <option value="" disabled selected>Seleziona un operatore</option>
                             <div th:each="utente : ${operatoriDisponibili}">
-                                <option th:value="${utente.id}" th:text="${utente.username}">Operatore</option>
+                                <option th:value="${utente.id}" th:text="${utente.username}"></option>
                             </div>
                         </select>
                     </div>
 
-                    <div>
+                    <div class="mb-3">
                         <label for="categoria">Seleziona Categoria:</label>
-                        <select class="form-select form-select-sm mb-5" id="categoria" name="categoria" th:field="*{categoria}">
+                        <select class="form-select form-select mb-5" id="categoria" name="categoria"
+                            th:field="*{categoria}">
                             <option value="" disabled selected>Seleziona una categoria</option>
-                            <th:block th:each="categoria : ${categorie}">
-                                <option th:value="${categoria.id}" th:text="${categoria.nome}">Categoria</option>
-                            </th:block>
+                            <div th:each="categoria : ${categorie}">
+                                <option th:value="${categoria.id}" th:text="${categoria.nome}"></option>
+                            </div>
                         </select>
                     </div>
 

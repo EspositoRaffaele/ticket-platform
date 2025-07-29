@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+</head>
+
+<body>
+    <header>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    </header>
+
+    <main class="container" th:object="${ticket}">
+        <section class="upper row">
+            <div class="div col-12 text-center mb-3 mt-3">
+                <h1 class="fw-bold">Dettagli Nota</h1>
+            </div>
+        </section>
+
+        <section class="ticket row justify-content-center">
+
+        </section>
+
+    </main>
+
+    <footer>
+        <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        <th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+    </footer>
+
+</body>
+
+</html>

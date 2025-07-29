@@ -1,7 +1,6 @@
 package org.java.spring.ticket_platform.controller;
 
 import org.java.spring.ticket_platform.Repository.NotaRepository;
-import org.java.spring.ticket_platform.Repository.UtenteRepository;
 import org.java.spring.ticket_platform.model.Nota;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,9 +19,6 @@ public class NotaController {
     @Autowired
     private NotaRepository notaRepository;
 
-    @Autowired
-    private UtenteRepository utenteRepository;
-
     @PostMapping
     public String store(Authentication authentication, @Valid @ModelAttribute("nota") Nota notaForm,
             BindingResult bindingResult, Model model) {
@@ -36,11 +32,11 @@ public class NotaController {
         // Recupero dalle Authority il ruolo associato all'utente attualmente loggato e verifico quale dei due sia per poi reindirizzarli alla pagina di appartenenza
         if (authentication.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))) {
-            // Se è un Admin, redirigi a /tickets
+            // Se è un Admin, reindirizza a /tickets
             return "redirect:/tickets";
         } else {
-            // Se è un Operatore, redirigi a /operatori/index
-            return "redirect:/operatori/index";
+            // Se è un Operatore, reindirizza a /operatori/index
+            return "redirect:/operatori";
         }
     }
 }
