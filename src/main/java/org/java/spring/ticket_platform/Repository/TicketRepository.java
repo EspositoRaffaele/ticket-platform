@@ -12,4 +12,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>{
     public List<Ticket> findByUtente(Optional<Utente> utente);
     public Optional<Ticket> findByUtenteId(Integer utenteId);
     public Optional<Ticket> findByIdAndUtenteId(Integer id, Integer utenteId);
+    public Integer countByUtenteId(Integer utenteId);
 }

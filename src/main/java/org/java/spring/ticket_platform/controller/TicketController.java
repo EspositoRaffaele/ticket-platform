@@ -116,8 +116,7 @@ public class TicketController {
     }
 
     @PostMapping("/edit/{id}")
-    public String edit(Authentication authentication, @PathVariable Integer id, @Valid @ModelAttribute("ticket") Ticket formTicket,
-            BindingResult bindingResult, Model model) {
+    public String edit(Authentication authentication, @PathVariable Integer id, @Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             return "/tickets/edit";

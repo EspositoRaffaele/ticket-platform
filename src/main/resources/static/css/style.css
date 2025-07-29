@@ -1,0 +1,5 @@
+.nav-tabs .nav-link {
+    color: inherit; /* Mantieni il colore del testo predefinito */
+    text-decoration: none; /* Rimuovi la linea sotto */
+    background-color: transparent; /* Rimuovi eventuali sfondi */
+}

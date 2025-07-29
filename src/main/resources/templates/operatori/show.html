@@ -18,7 +18,7 @@
     <main class="container" th:object="${ticket}">
         <section class="upper row">
             <div class="div col-12 text-center mb-3 mt-3">
-                <h1 class="fw-bold">Dettagli Ticket assegnati all'operatore: [[${ticket.titolo}]]</h1>
+                <h1 class="fw-bold">Dettagli Ticket assegnati all'operatore: [[*{utente.username}]]</h1>
             </div>
         </section>
 
@@ -34,7 +34,7 @@
                     <ul th:each="nota : ${ticket.note}" th:object="${nota}">
                         <li class="card-text">[[*{testo}]]</li>
                     </ul>
-                    <p class="card-text" ></p>
+                    <p class="card-text"></p>
                     <div class="card-footer"><strong>Stato:</strong> [[*{stato.nomeStato}]]</div>
                 </div>
             </div>
