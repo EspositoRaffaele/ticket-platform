@@ -48,7 +48,7 @@ public class UtenteController {
         // Recupero nome dell'utente autenticato
         String operatore = authentication.getName();
         // Recupero utente da db con query find by username
-        Optional<Utente> utenteCorrente = utenteRepository.findByUsername(operatore);
+        Optional<Utente> utenteCorrente = utenteRepository.findByEmail(operatore);
         if (utenteCorrente.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Impossibile trovare l'utente");
         }
@@ -86,25 +86,15 @@ public class UtenteController {
 
         ticketRepository.save(formTicket);
 
-        // if (authentication.getAuthorities().stream()
-        //         .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("OPERATORE"))) {
-        //     // Se è un Operatore, reindirizza a /operatori/index
-        //     return "redirect:/operatori";
-        // } else
-
         return "redirect:/operatori";
     }
 
     @PostMapping("/update-stato")
-    public String updateStato(Authentication authentication, @Valid @ModelAttribute("operatore") Utente operatoreForm, BindingResult bindingResult,
-            Model model, RedirectAttributes redirectAttributes) {
-        // if (bindingResult.hasErrors()) {
-        // model.addAttribute("operatore", operatoreForm);
-        // return "operatori/index";
-        // }
+    public String updateStato(Authentication authentication, @ModelAttribute("operatore") Utente operatoreForm, RedirectAttributes redirectAttributes,
+            Model model) {
 
         // Recupero l'utente dal form tramite Id
-        Optional<Utente> utenteOptional = utenteRepository.findByUsername(authentication.getName());
+        Optional<Utente> utenteOptional = utenteRepository.findByEmail(authentication.getName());
         if (utenteOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nessun utente trovato");
         }
@@ -121,6 +111,7 @@ public class UtenteController {
         Utente utente = utenteOptional.get();
         utente.setStato(operatoreForm.getStato());
         utenteRepository.save(utente);
+        redirectAttributes.addFlashAttribute("successo", "Stato aggiornato con successo.");
         return "redirect:/operatori";
 
     }
@@ -130,7 +121,7 @@ public class UtenteController {
         // Recupero lo username dell'utente loggato in pagina
         String username = authentication.getName();
         // Cerco l'utente tramite lo username e ne recupero l'id
-        Integer idUtente = utenteRepository.findByUsername(username).get().getId();
+        Integer idUtente = utenteRepository.findByEmail(username).get().getId();
         // Cerco il ticket per id del ticket e utente_id
         Optional<Ticket> ticket = ticketRepository.findByIdAndUtenteId(id, idUtente);
         // Se l'id dell'operatore associato al ticket non corrisponde alla rotta, torna

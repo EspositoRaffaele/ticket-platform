@@ -24,7 +24,7 @@
 
         <section class="note">
             <div class="col-12">
-                <h3 class="mb-5">Ciao [[${utenteCorrente.username}]], scrivi la tua nota da assegnare al Ticket #[[${id}]]</h3>
+                <h3 class="mb-5">Ciao [[${utenteCorrente.nome}]], scrivi la tua nota da assegnare al Ticket #[[${id}]]</h3>
                 <form th:action="@{/note}" method="POST" th:object="${nota}">
 
                     <input type="hidden" th:field="*{ticket}" id="ticket-id">

@@ -2,6 +2,8 @@ package org.java.spring.ticket_platform.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +23,7 @@ public class Stato {
     private String nomeStato;
 
     @OneToMany(mappedBy = "stato")
+    @JsonBackReference
     private List<Ticket> tickets;
 
     //*GETTER E SETTER */

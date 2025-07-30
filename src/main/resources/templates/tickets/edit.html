@@ -63,33 +63,52 @@
 
                     <div class="mb-3">
                         <label for="utente">Assegna Operatore Disponibile:</label>
-                        <select class="form-select form-select mb-3" id="utente" name="utente" th:field="*{utente}">
+                        <select class="form-select form-select mb-3" id="utente" name="utente" th:field="*{utente}"
+                            th:errorClass="is-invalid" required>
                             <option value="" disabled selected>Seleziona un operatore</option>
                             <div th:each="utente : ${operatoriDisponibili}">
-                                <option th:value="${utente.id}" th:text="${utente.username}">Operatore</option>
+                                <option th:value="${utente.id}" th:text="${utente.nome}">Operatore</option>
                             </div>
                         </select>
+
+                        <div th:if="${#fields.hasErrors('utente.id')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('utente.id')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="categoria">Seleziona Categoria:</label>
                         <select class="form-select form-select mb-3" id="categoria" name="categoria"
-                            th:field="*{categoria}">
+                            th:field="*{categoria}" th:errorClass="is-invalid" required>
                             <option value="" disabled selected>Seleziona una categoria</option>
                             <th:block th:each="categoria : ${categorie}">
                                 <option th:value="${categoria.id}" th:text="${categoria.nome}">Categoria</option>
                             </th:block>
                         </select>
+
+                        <div th:if="${#fields.hasErrors('categoria.id')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('categoria.id')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div sec:authorize="hasAuthority('OPERATORE')">
                         <label for="stato">Seleziona Stato:</label>
-                        <select class="form-select form-select-sm mb-5" id="stato" name="stato" th:field="*{stato}">
+                        <select class="form-select form-select-sm mb-5" id="stato" name="stato" th:field="*{stato}"
+                            th:errorClass="is-invalid" required>
                             <option value="" disabled selected>Aggiorna Stato:</option>
                             <th:block th:each="stato : ${stati}">
                                 <option th:value="${stato.id}" th:text="${stato.nomeStato}"></option>
                             </th:block>
                         </select>
+                        <div th:if="${#fields.hasErrors('stato')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('stato')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="mb-3 d-flex justify-content-between">

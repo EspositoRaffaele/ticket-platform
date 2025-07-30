@@ -42,23 +42,37 @@
 
                     <div class="mb-3">
                         <label for="utente">Assegna Operatore Disponibile:</label>
-                        <select class="form-select form-select mb-3" id="utente" name="utente" th:field="*{utente}">
-                            <option value="" disabled selected>Seleziona un operatore</option>
+                        <select class="form-select form-select mb-3" id="utente" name="utente" th:field="*{utente}"
+                            th:errorClass="is-invalid" required>
+                            <option value="" disabled selected th:unless="${operatoriDisponibili.isEmpty()}">Seleziona un operatore</option>
+                            <option value="" selected th:if="${operatoriDisponibili.isEmpty()}">Nessun Operatore disponibile</option>
                             <div th:each="utente : ${operatoriDisponibili}">
-                                <option th:value="${utente.id}" th:text="${utente.username}"></option>
+                                <option th:value="${utente.id}" th:text="${utente.nome}"></option>
                             </div>
                         </select>
+
+                        <div th:if="${#fields.hasErrors('utente.id')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('utente.id')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="categoria">Seleziona Categoria:</label>
                         <select class="form-select form-select mb-5" id="categoria" name="categoria"
-                            th:field="*{categoria}">
+                            th:field="*{categoria}" th:errorClass="is-invalid" required>
                             <option value="" disabled selected>Seleziona una categoria</option>
                             <div th:each="categoria : ${categorie}">
                                 <option th:value="${categoria.id}" th:text="${categoria.nome}"></option>
                             </div>
                         </select>
+
+                        <div th:if="${#fields.hasErrors('categoria.id')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('categoria.id')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="mb-3 d-flex justify-content-between">

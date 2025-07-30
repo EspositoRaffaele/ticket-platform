@@ -43,6 +43,8 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Titolo Ticket</th>
+                            <th scope="col">Gestito Da:</th>
+                            <th scope="col">Numero Note</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -50,6 +52,8 @@
                         <tr th:each="ticket : ${tickets}" th:object="${ticket}">
                             <td th:text="*{id}"></td>
                             <td th:text="*{titolo}"></td>
+                            <td th:text="*{utente.nome}"></td>
+                            <td th:text="*{note.size()}"></td>
                             <td class="text-end">
                                 <a th:href="@{/tickets/nota/{id}(id=*{id})}"
                                     class="btn btn-outline-primary btn-sm">Nota</a>

@@ -72,17 +72,12 @@ public class TicketController {
 
     @GetMapping("/create")
     public String create(Model model) {
-        // Optional<Utente> utentiOperatoriDisponibili =
-        // utenteService.getUtentiConRuoloEDisponibili("OPERATORE");
-        // if (utentiOperatoriDisponibili.isEmpty()) {
-        // throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nessun operatore
-        // disponibile trovato");
-        // }
         
         //Query su utenti - ricerca per nome_ruolo e stato - Ritorna una lista con operatori in stato attivo
         List<Utente> operatori = utenteRepository.findByRuoliNomeRuoloAndStatoTrue("OPERATORE");
         // Recupero lo stato del ticket di tipo 1 (Da Fare) e lo imposto come default alla creazione
         Optional<Stato> stato = statoRepository.findById(1);
+
         Ticket ticket = new Ticket();
         ticket.setStato(stato.get());
         model.addAttribute("operatoriDisponibili", operatori);
@@ -98,6 +93,8 @@ public class TicketController {
     public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model) {
         
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categorie", categoriaRepository.findAll());
+            model.addAttribute("operatoriDisponibili", utenteRepository.findByRuoliNomeRuoloAndStatoTrue("OPERATORE"));
             return "tickets/create";
         }
         ticketRepository.save(formTicket);
@@ -119,6 +116,9 @@ public class TicketController {
     public String edit(Authentication authentication, @PathVariable Integer id, @Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categorie", categoriaRepository.findAll());
+            model.addAttribute("opertoriDisponibili", utenteRepository.findAll());
+            model.addAttribute("stati", statoRepository.findAll());
             return "/tickets/edit";
         }
 
@@ -154,9 +154,9 @@ public class TicketController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Impossibile creare una nota: Non esiste un ticket con id " + id);
         }
-        // Optional<Utente> utenteCorrente = utenteService.getCurrentUser();
+        
         String username = authentication.getName();
-        Optional<Utente> utenteCorrente = utenteRepository.findByUsername(username);
+        Optional<Utente> utenteCorrente = utenteRepository.findByEmail(username);
         if (utenteCorrente.isPresent()) {
             model.addAttribute("utenteCorrente", utenteCorrente.get());
 

@@ -19,7 +19,7 @@ public class DatabaseUserDetails implements UserDetails {
     
     public DatabaseUserDetails(Utente utente){
         this.id = utente.getId();
-        this.username = utente.getUsername();
+        this.username = utente.getEmail();
         this.password = utente.getPassword();
 
         this.authorities = new HashSet<GrantedAuthority>();

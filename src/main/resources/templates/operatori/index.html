@@ -22,10 +22,10 @@
             </div>
         </section>
 
-        <section class="row justify-content-center mb-5" th:each="ruolo : ${operatore.ruoli}" th:object="${operatore}">
-            <div class="card col-12 border-info" style="width: 18rem;">
+        <section class="row justify-content-center mb-5" th:each="ruolo : ${operatore.ruoli}">
+            <div class="card col-12 border-info border-4" style="width: 20rem;">
                 <div class="card-header">
-                    <h5 class="card-title" th:text="*{username}"></h5>
+                    <h5 class="card-title" th:text="${operatore.nome}"></h5>
                     <h6 class="card-subtitle mb-2 text-body-secondary" th:each="ruolo : ${operatore.ruoli}">
                         [[${ruolo.nomeRuolo}]]</h6>
                     <h6 class="card-subtitle mb-2 text-body-secondary" th:if="${operatore.stato} == true">
@@ -42,15 +42,15 @@
                             <select class="form-control border-info" id="stato" th:field="*{stato}">
                                 <option th:value="true">Attivo</option>
                                 <option th:value="false">Non attivo</option>
-                            </select>
+                            </select>                            
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm mt-3">Salva stato</button>
                         <div th:if="${errore}" class="alert alert-danger mt-3" th:text="${errore}"></div>
+                        <div th:if="${successo}" class="alert alert-success mt-3" th:text="${successo}"></div>
                     </form>
                 </div>
             </div>
         </section>
-
 
         <section class="tickets row">
             <div class="col-12">
@@ -65,14 +65,13 @@
                 </div>
             </div>
             <div class="col-12">
-                <table class="table table-dark table-striped table-hover">
+                <table class="table table-dark table-striped table-hover" th:if="${ticketAssegnati.size() > 0}">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Titolo Ticket</th>
                             <th scope="col">Gestito Da</th>
                             <th scope="col">Stato</th>
-                            <!-- <th scope="col">Note</th> -->
                             <th scope="col">Numero Note</th>
                             <th scope="col"></th>
                         </tr>
@@ -81,13 +80,8 @@
                         <tr th:each="ticket : ${ticketAssegnati}" th:object="${ticket}">
                             <td th:text="*{id}"></td>
                             <td th:text="*{titolo}"></td>
-                            <td th:text="*{utente.username}"></td>
+                            <td th:text="*{utente.nome}"></td>
                             <td th:text="*{stato.nomeStato}"></td>
-                            <!-- <td> 
-                                <ul>
-                                    <li th:each="nota : *{note}" th:text="${nota.testo}"></li>
-                                </ul>
-                            </td> -->
                             <td th:text="*{note.size()}"></td>
                             <td class="text-end">
                                 <a th:href="@{/tickets/nota/{id}(id=*{id})}"
@@ -137,7 +131,7 @@
                     </tbody>
                 </table>
 
-                <!-- <h2 class="text-center" th:unless="${ticketAssegnati.size() > 0}">Nessun ticket trovato</h2> -->
+                <h2 class="text-center" th:unless="${ticketAssegnati.size() > 0}">Nessun ticket trovato</h2>
             </div>
         </section>
     </main>

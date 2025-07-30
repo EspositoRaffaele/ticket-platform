@@ -3,6 +3,8 @@ package org.java.spring.ticket_platform.model;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,20 +15,22 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "utenti")
+@Table(name = "utenti", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class Utente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = "Il nome non può essere vuoto o null")
-    private String username;
+    private String nome;
 
+    @Email(message = "Formato non valido")
     @NotBlank(message = "L'email non può essere vuoto o null")
     private String email;
 
@@ -34,17 +38,19 @@ public class Utente {
     @Size(min = 5, message = "La password deve essere lunga almeno 5 caratteri")
     private String password;
 
-    @NotNull
     private boolean stato;
 
     @OneToMany(mappedBy = "utente")
+    @JsonBackReference
     private List<Nota> note;
 
     @OneToMany(mappedBy = "utente")
+    @JsonBackReference
     private List<Ticket> tickets;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "utente_ruolo", joinColumns = @JoinColumn(name = "utente_id"), inverseJoinColumns = @JoinColumn(name = "ruolo_id"))
+    @JsonBackReference
     private Set<Ruolo> ruoli;
 
     //*GETTER E SETTER */
@@ -56,12 +62,12 @@ public class Utente {
         this.id = id;
     }
 
-    public String getUsername() {
-        return this.username;
+    public String getNome() {
+        return this.nome;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getEmail() {

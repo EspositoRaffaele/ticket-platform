@@ -28,7 +28,7 @@
                     <h4 class="card-title">[[${ticket.titolo}]]</h4>
                 </div>
                 <div class="card-body">
-                    <h6 class="card-text fs-6"><strong>Gestito dall'operatore:</strong> [[*{utente.username}]]</h6>
+                    <h6 class="card-text fs-6"><strong>Gestito dall'operatore:</strong> [[*{utente.nome}]]</h6>
                     <h6 class="card-text fs-6"><strong>Categoria:</strong> [[${ticket.categoria.nome}]]</h6>
                 </div>
                 <div class="card-footer border-info"><strong>Stato:</strong> [[${ticket.stato.nomeStato}]]</div>
@@ -45,7 +45,7 @@
                                 Elenco Note
                             </div>
                             <ul class="list-group list-group-flush" th:each="nota : ${ticket.note}" th:object="${nota}">
-                                <li class="list-group-item" th:each="ruolo : ${nota.utente.ruoli}"><strong>Autore:</strong> [[${ruolo.nomeRuolo}]] - [[*{utente.username}]]</li>
+                                <li class="list-group-item" th:each="ruolo : ${nota.utente.ruoli}"><strong>Autore:</strong> [[${ruolo.nomeRuolo}]] - [[*{utente.nome}]]</li>
                                 <li class="list-group-item"><strong>Data Creazione:</strong> [[*{dataCreazione}]]</li>
                                 <li class="list-group-item"><strong>Nota:</strong> [[*{testo}]]</li>
                             </ul>

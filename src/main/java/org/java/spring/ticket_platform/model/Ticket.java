@@ -2,8 +2,6 @@ package org.java.spring.ticket_platform.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "tickets")
@@ -26,17 +25,16 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
-    @JsonBackReference
+    @NotNull(message = "Il campo non può essere vuoto")
     private Categoria categoria;
 
     @ManyToOne
     @JoinColumn(name = "stato_id", nullable = false)
-    @JsonBackReference
     private Stato stato;
 
     @ManyToOne
     @JoinColumn(name = "utente_id", nullable = false)
-    @JsonBackReference
+    @NotNull(message = "Il campo non può essere vuoto")
     private Utente utente;
 
     @OneToMany(mappedBy = "ticket")

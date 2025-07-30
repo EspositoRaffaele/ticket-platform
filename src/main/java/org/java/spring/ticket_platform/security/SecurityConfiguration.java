@@ -16,14 +16,16 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/tickets", "/tickets/index", "/tickets/create").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/tickets/**").permitAll()
-                .requestMatchers("/tickets/{id}").hasAnyAuthority("OPERATORE", "ADMIN")
-                .requestMatchers("/operatori", "/operatori/**", "/tickets/{id}").hasAuthority("OPERATORE")
-                .requestMatchers("/tickets", "/tickets/**").hasAnyAuthority("OPERATORE", "ADMIN")
+                .requestMatchers("/tickets", "/tickets/create", "/tickets/*").hasAuthority("ADMIN")
+                .requestMatchers("/tickets/edit/*", "/tickets/nota/*").hasAnyAuthority("ADMIN", "OPERATORE")
+                .requestMatchers(HttpMethod.POST, "/tickets/create", "/tickets/delete/*").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/tickets/edit/*", "/note").hasAnyAuthority("ADMIN", "OPERATORE")
+                .requestMatchers("/operatori", "/operatori/*", "/operatori/edit/*").hasAuthority("OPERATORE")
+                .requestMatchers(HttpMethod.POST, "/operatori/update-stato", "/operatori/edit/*", "/operatori/delete/*").hasAuthority("OPERATORE")
                 .requestMatchers("/**").permitAll())
-                .formLogin(Customizer.withDefaults());
-
+                .formLogin(Customizer.withDefaults())
+                .cors(cors -> cors.disable())
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 

@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UtenteRepository extends JpaRepository<Utente, Integer>{
     Optional<Utente> findById(Integer id);
-    Optional<Utente> findByUsername(String username);
+    Optional<Utente> findByEmail(String email);
     List<Utente> findByRuoliNomeRuoloAndStatoTrue(String nomeRuolo);
 }
