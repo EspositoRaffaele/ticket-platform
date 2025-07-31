@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.java.spring.ticket_platform.Repository.CategoriaRepository;
 import org.java.spring.ticket_platform.Repository.NotaRepository;
+import org.java.spring.ticket_platform.Repository.RuoloRepository;
 import org.java.spring.ticket_platform.Repository.StatoRepository;
 import org.java.spring.ticket_platform.Repository.TicketRepository;
 import org.java.spring.ticket_platform.Repository.UtenteRepository;
@@ -48,6 +49,9 @@ public class TicketController {
     @Autowired
     private NotaRepository notaRepository;
 
+    @Autowired
+    private RuoloRepository ruoloRepository;
+
     @GetMapping
     public String index(Model model, @RequestParam(name = "keyword", required = false) String keyword) {
         List<Ticket> tickets;
@@ -57,6 +61,7 @@ public class TicketController {
         } else {
             tickets = ticketRepository.findAll();
         }
+        model.addAttribute("operatori", utenteRepository.findByRuoliNomeRuolo("OPERATORE"));
         model.addAttribute("tickets", tickets);
 
         return "tickets/index";
@@ -72,10 +77,12 @@ public class TicketController {
 
     @GetMapping("/create")
     public String create(Model model) {
-        
-        //Query su utenti - ricerca per nome_ruolo e stato - Ritorna una lista con operatori in stato attivo
+
+        // Query su utenti - ricerca per nome_ruolo e stato - Ritorna una lista con
+        // operatori in stato attivo
         List<Utente> operatori = utenteRepository.findByRuoliNomeRuoloAndStatoTrue("OPERATORE");
-        // Recupero lo stato del ticket di tipo 1 (Da Fare) e lo imposto come default alla creazione
+        // Recupero lo stato del ticket di tipo 1 (Da Fare) e lo imposto come default
+        // alla creazione
         Optional<Stato> stato = statoRepository.findById(1);
 
         Ticket ticket = new Ticket();
@@ -84,14 +91,13 @@ public class TicketController {
         model.addAttribute("categorie", categoriaRepository.findAll());
         model.addAttribute("stato", stato.get());
         model.addAttribute("ticket", ticket);
-        
 
         return "tickets/create";
     }
 
     @PostMapping("/create")
     public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model) {
-        
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("categorie", categoriaRepository.findAll());
             model.addAttribute("operatoriDisponibili", utenteRepository.findByRuoliNomeRuoloAndStatoTrue("OPERATORE"));
@@ -113,7 +119,8 @@ public class TicketController {
     }
 
     @PostMapping("/edit/{id}")
-    public String edit(Authentication authentication, @PathVariable Integer id, @Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model) {
+    public String edit(Authentication authentication, @PathVariable Integer id,
+            @Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("categorie", categoriaRepository.findAll());
@@ -130,7 +137,7 @@ public class TicketController {
             return "redirect:/operatori";
         } else
 
-        return "redirect:/tickets";
+            return "redirect:/tickets";
     }
 
     @PostMapping("/delete/{id}")
@@ -154,7 +161,7 @@ public class TicketController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Impossibile creare una nota: Non esiste un ticket con id " + id);
         }
-        
+
         String username = authentication.getName();
         Optional<Utente> utenteCorrente = utenteRepository.findByEmail(username);
         if (utenteCorrente.isPresent()) {
@@ -174,4 +181,5 @@ public class TicketController {
 
         return "note/create";
     }
+
 }

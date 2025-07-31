@@ -34,7 +34,7 @@ public class Utente {
     @NotBlank(message = "L'email non può essere vuoto o null")
     private String email;
 
-    @NotBlank(message = "La password nome non può essere vuoto o null")
+    @NotBlank(message = "La password non può essere vuoto o null")
     @Size(min = 5, message = "La password deve essere lunga almeno 5 caratteri")
     private String password;
 

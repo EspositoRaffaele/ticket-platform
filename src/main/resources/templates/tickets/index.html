@@ -25,8 +25,7 @@
         <section class="tickets row">
             <div class="col-12">
                 <div class="buttons mb-4 px5 d-flex justify-content-between">
-                    <a th:href="@{/tickets/create}" sec:authorize="hasAuthority('ADMIN')"
-                        class="btn btn-md btn-primary">Crea un nuovo ticket</a>
+                    <a th:href="@{/tickets/create}" class="btn btn-md btn-primary">Crea un nuovo ticket</a>
 
                     <div class="input-group w-25">
                         <form th:action="@{/tickets}" class="d-inline-block d-flex" method="GET">
@@ -43,7 +42,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Titolo Ticket</th>
-                            <th scope="col">Gestito Da:</th>
+                            <th scope="col">Gestito Da</th>
                             <th scope="col">Numero Note</th>
                             <th scope="col"></th>
                         </tr>
@@ -79,10 +78,11 @@
                                                     Ticket: <strong>[[*{titolo}]]</strong>
                                                 </h1>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close">asd</button>
+                                                    aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <p class="text-start">Stai per cancellare in modo permanente il Ticket. Sei sicuro?
+                                                <p class="text-start">Stai per cancellare in modo permanente il Ticket.
+                                                    Sei sicuro?
                                                 </p>
                                             </div>
                                             <div class="modal-footer">
@@ -100,8 +100,34 @@
                         </tr>
                     </tbody>
                 </table>
+                <a th:href="@{/operatori/crea-utente}" class="btn btn-md btn-success mb-3">Crea un nuovo
+                    Operatore</a>
 
                 <h2 class="text-center" th:unless="${tickets.size() > 0}">Nessun ticket trovato</h2>
+
+                <table class="table table-dark table-striped table-hover w-25" th:if="${operatori.size() > 0}">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Stato Attività</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="operatore : ${operatori}" th:object="${operatore}">
+                            <td th:text="*{id}"></td>
+                            <td th:text="*{nome}"></td>
+                            <td th:if="*{stato == true}">ATTIVO</td>
+                            <td th:if="*{stato == false}">NON ATTIVO</td>
+                            <td class="text-end">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="text-center" th:unless="${operatori.size() > 0}">Nessun Operatore presente</h2>
+
             </div>
         </section>
     </main>

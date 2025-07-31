@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creazione Ticket</title>
+
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+</head>
+
+<body>
+    <header>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    </header>
+
+    <main class="container">
+        <section class="upper row">
+            <div class="div col-12 text-center mb-3">
+                <h1 class="text-light">Creazione di un nuovo Operatore</h1>
+            </div>
+        </section>
+
+        <section class="ticket row">
+            <div class="col-12">
+                <form th:action="@{/operatori/crea-utente}" method="post" th:object="${nuovoUtente}">
+
+                    <input type="hidden" th:field="*{stato}" id="stato-id">
+
+                    <div class="mb-3">
+                        <label for="titolo" class="form-label">Email: </label>
+                        <input type="text" class="form-control mb-3" id="titolo" th:field="*{email}"
+                            th:errorClass="is-invalid" required>
+
+                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('email')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="titolo" class="form-label">Nome: </label>
+                        <input type="text" class="form-control mb-3" id="titolo" th:field="*{nome}"
+                            th:errorClass="is-invalid" required>
+
+                        <div th:if="${#fields.hasErrors('nome')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('nome')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="titolo" class="form-label">Password: </label>
+                        <input type="text" class="form-control mb-3" id="titolo" th:field="*{password}"
+                            th:errorClass="is-invalid" required>
+
+                        <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                            <ul>
+                                <li th:each="error : ${#fields.errors('password')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between">
+                        <button class="btn btn-primary">Crea</button>
+                        <button class="btn btn-warning" type="reset">Azzera campi</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+        <th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+    </footer>
+
+</body>
+
+</html>
